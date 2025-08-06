@@ -1,0 +1,116 @@
+-- HC2 Full Task Set: HC2T1 to HC2T7
+
+-- HC2T1 - Task 1: Checking Types in GHCi
+-- Expected types before checking:
+-- 42               :: Int
+-- 3.14             :: Fractional a => a (commonly Double)
+-- "Haskell"        :: [Char] or String
+-- 'Z'              :: Char
+-- True && False    :: Bool
+
+-- You can verify these in GHCi using the :t command:
+-- :t 42
+-- :t 3.14
+-- :t "Haskell"
+-- :t 'Z'
+-- :t True && False
+
+-- HC2T2 - Task 2: Function Type Signatures and Implementations
+
+add :: Int -> Int -> Int
+add x y = x + y
+
+isEven :: Int -> Bool
+isEven x = x `mod` 2 == 0
+
+concatStrings :: String -> String -> String
+concatStrings s1 s2 = s1 ++ s2
+
+-- HC2T3 - Task 3: Immutable Variables
+
+myAge :: Int
+myAge = 25
+
+piValue :: Double
+piValue = 3.14159
+
+greeting :: String
+greeting = "Hello, Haskell!"
+
+isHaskellFun :: Bool
+isHaskellFun = True
+
+-- If you try to "modify" any of the above variables, Haskell will raise an error
+-- because all bindings are immutable.
+
+-- HC2T4 - Task 4: Infix <-> Prefix Conversions
+
+-- Infix to Prefix:
+-- 5 + 3       => (+) 5 3
+-- 10 * 4      => (*) 10 4
+-- True && False => (&&) True False
+
+-- Prefix to Infix:
+-- (+) 7 2     => 7 + 2
+-- (*) 6 5     => 6 * 5
+-- (&&) True False => True && False
+
+-- HC2T5 - Task 5: Defining and Using Functions
+
+circleArea :: Float -> Float
+circleArea r = pi * r * r
+
+maxOfThree :: Int -> Int -> Int -> Int
+maxOfThree x y z = max x (max y z)
+
+-- HC2T6 - Task 6: Int vs Integer
+
+smallNumber :: Int
+smallNumber = 262
+
+bigNumber :: Integer
+bigNumber = 2127
+
+-- Try evaluating this in GHCi:
+-- 2^64 :: Int
+-- It will likely overflow, resulting in a negative number or runtime error,
+-- since Int has limited range (typically 32 or 64 bits depending on system).
+
+-- HC2T7 - Task 7: Boolean Expressions
+
+boolExpr1 :: Bool
+boolExpr1 = True && True      -- evaluates to True
+
+boolExpr2 :: Bool
+boolExpr2 = False || False    -- evaluates to False
+
+boolExpr3 :: Bool
+boolExpr3 = not False         -- evaluates to True
+
+boolExpr4 :: Bool
+boolExpr4 = 5 > 10            -- evaluates to False
+
+-- Main to test everything
+
+main :: IO ()
+main = do
+  putStrLn "HC2T2 Function Tests:"
+  print (add 4 5)               -- 9
+  print (isEven 6)              -- True
+  print (concatStrings "Hi, " "there!") -- "Hi, there!"
+
+  putStrLn "\nHC2T3 Immutable Variables:"
+  print myAge
+  print piValue
+  print greeting
+  print isHaskellFun
+
+  putStrLn "\nHC2T5 Function Tests:"
+  print (circleArea 3.0)        -- ~28.27
+  print (maxOfThree 4 9 2)      -- 9
+
+  putStrLn "\nHC2T7 Boolean Expressions:"
+  print boolExpr1
+  print boolExpr2
+  print boolExpr3
+  print boolExpr4
