@@ -1,0 +1,122 @@
+
+import Text.Read (readMaybe)
+
+-- HC7T1: Define Color and Eq instance
+data Color = Red | Green | Blue deriving (Show)
+
+instance Eq Color where
+  Red == Red     = True
+  Green == Green = True
+  Blue == Blue   = True
+  _ == _         = False
+
+-- HC7T2: Implement Ord for Color (Red < Green < Blue)
+instance Ord Color where
+  compare Red Green = LT
+  compare Red Blue  = LT
+  compare Green Blue = LT
+  compare x y
+    | x == y    = EQ
+    | otherwise = GT
+
+-- HC7T3: Function with Eq and Ord constraints
+compareValues :: (Eq a, Ord a) => a -> a -> a
+compareValues x y = if x >= y then x else y
+
+-- HC7T4: Shape type with Show and Read
+data Shape = Circle Double | Rectangle Double Double deriving (Show, Read)
+
+-- HC7T5: squareArea with Num constraint
+squareArea :: Num a => a -> a
+squareArea side = side * side
+
+-- HC7T6: circleCircumference for Integral and Floating
+circleCircumference :: (Integral a, Floating b) => a -> b
+circleCircumference radius = 2 * pi * fromIntegral radius
+
+-- HC7T7: Bounded and Enum for Color and nextColor function
+instance Bounded Color where
+  minBound = Red
+  maxBound = Blue
+
+instance Enum Color where
+  fromEnum Red   = 0
+  fromEnum Green = 1
+  fromEnum Blue  = 2
+
+  toEnum 0 = Red
+  toEnum 1 = Green
+  toEnum 2 = Blue
+  toEnum _ = error "Invalid Color enum"
+
+nextColor :: Color -> Color
+nextColor c
+  | c == maxBound = minBound
+  | otherwise     = succ c
+
+-- HC7T8: parseShape returns Maybe Shape
+parseShape :: String -> Maybe Shape
+parseShape s = readMaybe s
+
+-- HC7T9: Describable type class
+class Describable a where
+  describe :: a -> String
+
+instance Describable Bool where
+  describe True  = "This is True"
+  describe False = "This is False"
+
+instance Describable Shape where
+  describe (Circle r)       = "Circle with radius " ++ show r
+  describe (Rectangle w h)  = "Rectangle with width " ++ show w ++ " and height " ++ show h
+
+-- HC7T10: describeAndCompare with multiple constraints
+describeAndCompare :: (Describable a, Ord a) => a -> a -> String
+describeAndCompare x y = describe (compareValues x y)
+
+-- For HC7T10 to work with Shape, we need Ord instance
+instance Eq Shape where
+  (Circle r1) == (Circle r2) = r1 == r2
+  (Rectangle w1 h1) == (Rectangle w2 h2) = (w1 == w2) && (h1 == h2)
+  _ == _ = False
+
+instance Ord Shape where
+  compare (Circle r1) (Circle r2) = compare r1 r2
+  compare (Rectangle w1 h1) (Rectangle w2 h2) = compare (w1 * h1) (w2 * h2)
+  compare (Circle _) (Rectangle _ _) = LT
+  compare (Rectangle _ _) (Circle _) = GT
+
+-- Main function to test everything
+main :: IO ()
+main = do
+  putStrLn "-- HC7T1 & HC7T2: Color Eq and Ord --"
+  print $ Red == Green        -- False
+  print $ Red < Green         -- True
+  print $ compareValues Green Blue  -- Blue
+
+  putStrLn "\n-- HC7T4: Show and Read Shape --"
+  let c = Circle 5.0
+  let r = Rectangle 3.0 4.0
+  print c
+  print r
+  print (parseShape "Circle 7.0" :: Maybe Shape)
+  print (parseShape "Rectangle 3.0 6.0" :: Maybe Shape)
+  print (parseShape "Triangle 3 4 5" :: Maybe Shape) -- Should be Nothing
+
+  putStrLn "\n-- HC7T5: squareArea --"
+  print $ squareArea 4
+
+  putStrLn "\n-- HC7T6: circleCircumference --"
+  print $ circleCircumference 5
+
+  putStrLn "\n-- HC7T7: nextColor --"
+  print $ nextColor Red
+  print $ nextColor Blue
+
+  putStrLn "\n-- HC7T9: Describable instances --"
+  print $ describe True
+  print $ describe c
+
+  putStrLn "\n-- HC7T10: describeAndCompare --"
+  putStrLn $ describeAndCompare (Circle 3) (Circle 5)
+  putStrLn $ describeAndCompare (Rectangle 2 3) (Rectangle 4 4)
