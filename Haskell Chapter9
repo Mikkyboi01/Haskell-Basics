@@ -1,0 +1,80 @@
+
+-- HC9T1: Parametric Type Synonym
+type Entity a = (String, a)  -- E.g., ("0xabc", 100)
+
+-- HC9T2: Parametric Data Type
+data Box a = Empty | Has a deriving (Show)
+
+-- HC9T3: Add Values in a Box
+addN :: Num a => a -> Box a -> Box a
+addN n Empty     = Empty
+addN n (Has val) = Has (n + val)
+
+-- HC9T4: Extract a Value from a Box
+extract :: a -> Box a -> a
+extract def Empty     = def
+extract _   (Has val) = val
+
+-- HC9T5: Parametric Shape with Record Syntax
+data Shape a
+  = Circle { color :: a }
+  | Rectangle { color :: a }
+  deriving (Show)
+
+-- HC9T6: Recursive Tweet Data Type
+data Tweet = Tweet
+  { content  :: String
+  , likes    :: Int
+  , comments :: [Tweet]
+  } deriving (Show)
+
+-- HC9T7: Engagement Function for Tweets
+engagement :: Tweet -> Int
+engagement (Tweet _ l cs) = l + sum (map engagement cs)
+
+-- HC9T8: Recursive Sequence
+data Sequence a = End | Node a (Sequence a) deriving (Show)
+
+-- HC9T9: Check for Element in Sequence
+elemSeq :: Eq a => a -> Sequence a -> Bool
+elemSeq _ End = False
+elemSeq x (Node y ys)
+  | x == y    = True
+  | otherwise = elemSeq x ys
+
+-- HC9T10: Binary Search Tree
+data BST a = EmptyTree
+           | NodeBST a (BST a) (BST a)
+           deriving (Show)
+
+-- Sample usage / test outputs
+main :: IO ()
+main = do
+  -- HC9T3: AddN
+  print $ addN 5 (Has 10)       -- Has 15
+  print $ addN 5 Empty          -- Empty
+
+  -- HC9T4: Extract
+  print $ extract 0 (Has 42)    -- 42
+  print $ extract 99 Empty      -- 99
+
+  -- HC9T5: Shapes
+  let redCircle = Circle { color = "Red" }
+  let blueRect  = Rectangle { color = "Blue" }
+  print redCircle
+  print blueRect
+
+  -- HC9T7: Tweet engagement
+  let reply1 = Tweet "Reply 1" 5 []
+  let reply2 = Tweet "Reply 2" 3 []
+  let mainTweet = Tweet "Main tweet" 20 [reply1, reply2]
+  print $ engagement mainTweet  -- 28
+
+  -- HC9T9: Element in Sequence
+  let seq1 = Node 1 (Node 2 (Node 3 End))
+  print $ elemSeq 2 seq1        -- True
+  print $ elemSeq 5 seq1        -- False
+
+  -- HC9T10: Example BST
+  let tree = NodeBST 10 (NodeBST 5 EmptyTree EmptyTree) (NodeBST 15 EmptyTree EmptyTree)
+  print tree
